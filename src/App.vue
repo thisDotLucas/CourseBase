@@ -1,21 +1,18 @@
 <template>
   <div id="app">
-    <Period></Period>
-    <AllCourses></AllCourses>
+    <Courses></Courses>
   </div>
 </template>
 
 <script>
 
-import Period from "@/components/Period";
-import AllCourses from "@/components/AllCourses";
+import Courses from "@/components/Courses";
+
 
 export default {
   name: 'App',
   components: {
-    AllCourses,
-    Period
-
+    Courses
   }
 }
 </script>
