@@ -1,21 +1,33 @@
 <template>
-    <ul>
-        <Course></Course>
-    </ul>
+    <div class="container">
+        <ul>
+            <li v-for="course in courses" v-bind:key="course"> {{course.name}}
+
+            </li>
+        </ul>
+    </div>
 </template>
 
 <script>
 
-    import Course from "@/components/Course";
-
     export default {
         name: "AllCourses",
-        components: {
-            Course
+        data() {
+            return {
+                courses: []
+            }
+        },
+        methods: {
+
+
         }
     }
 </script>
 
 <style scoped>
+
+    ul {
+        list-style-type: none;
+    }
 
 </style>
