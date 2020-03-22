@@ -9,24 +9,37 @@
                 <li id="p4"><a v-on:click="updatePeriod(4)">Period 4</a></li>
             </ul>
         </div>
-
-        <div class="all-courses">
-            <ul>
-                <li v-for="(course, index) in currentCourses" v-bind:key="index">
-                    <a target="_blank" rel="noopener noreferrer" v-bind:href="course.url" class="course">{{course.name}}</a>
-                </li>
-            </ul>
-        </div>
+        <ul class="main-divider">
+            <li>
+                <div class="all-courses">
+                    <ul>
+                        <li v-for="(course, index) in currentCourses" v-bind:key="index">
+                            <Course v-bind:name="course.name" v-bind:url="course.url" v-bind:timestamps="course.timestamps"></Course>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+            <li class="calendar">
+                <div style="height: 80vh">
+                    <Calendar></Calendar>
+                </div>
+            </li>
+        </ul>
         <p>*Only currently active or available It/CS courses from Turku based universities are shown.</p>
     </div>
 </template>
 
 <script>
+
     import database from "./firebaseInit"
-    //import firebase from "./firebase"
+    import Calendar from "./Calendar"
+    import Course from "./Course"
 
     export default {
-        name: "Period",
+        name: "AllCourse",
+        components: {
+          Calendar, Course
+        },
         data(){
             return{
                 currentCourses: [],
@@ -49,9 +62,9 @@
 
         },
         methods: {
-            updatePeriod: function(periodNr) {
+            updatePeriod(periodNr) {
 
-                let that = this;
+                let that = this
 
                 if(this.cachedCourses[periodNr - 1] == null){
 
@@ -84,10 +97,10 @@
                 switch(selectorNr) {
                     case 1:
                         this.selectedPeriod = document.getElementById("p1")
-                        break;
+                        break
                     case 2:
                         this.selectedPeriod = document.getElementById("p2")
-                        break;
+                        break
                     case 3:
                         this.selectedPeriod = document.getElementById("p3")
                         break
@@ -110,6 +123,7 @@
 
     .selector {
         margin-left: 20%;
+        margin-bottom: 1%;
     }
 
     ul {
@@ -138,16 +152,11 @@
 
     .header > li:hover {
         cursor: pointer;
-        /*transform: translateY(-3px);
-        this will raise the element */
     }
 
     li > a {
         display: inline-block;
         padding: 5px;
-        /*transition: 0.4s all ease;
-        will-change: transform;
-        transform: translateY(0px);*/
     }
 
     .all-courses {
@@ -157,12 +166,18 @@
         overflow-y: scroll;
         direction:rtl;
         height:80vh;
+        width: 70vh;
     }
 
-    .course {
-        font-size: 0.9em;
-        border: #2c3e50 solid 2px;
-        margin: 4px;
+
+
+    .main-divider {
+        display: flex;
+    }
+
+    .calendar {
+        height: 30vh;
+        width: 55%;
     }
 
 </style>
