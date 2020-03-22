@@ -40,4 +40,11 @@
     .calendar{
         font-size: 0.8em;
     }
+
+    @media screen and (max-width: 450px) {
+        div {
+            height: 60%;
+            width: 80%;
+        }
+    }
 </style>

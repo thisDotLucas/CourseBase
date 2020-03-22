@@ -84,4 +84,20 @@
         color: crimson;
     }
 
+    @media screen and (max-width: 450px) {
+
+        div {
+            margin-left: 0;
+            width: 100px;
+        }
+
+        a {
+            font-size: 4px;
+        }
+
+        .course {
+            font-size: 4px;
+        }
+    }
+
 </style>

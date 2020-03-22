@@ -2,7 +2,7 @@
     <div class="container">
         <div class="selector">
             <ul class="header">
-                <h2>Show courses for:</h2>
+                <h2 class="hide-mobile">Show courses for:</h2>
                 <li id="p1"><a v-on:click="updatePeriod(1)">Period 1</a></li>
                 <li id="p2"><a v-on:click="updatePeriod(2)">Period 2</a></li>
                 <li id="p3"><a v-on:click="updatePeriod(3)">Period 3</a></li>
@@ -139,6 +139,7 @@
     .header {
         display: flex;
         align-items: center;
+        margin-left: 0;
     }
 
     ul > h2 {
@@ -169,8 +170,6 @@
         width: 70vh;
     }
 
-
-
     .main-divider {
         display: flex;
     }
@@ -178,6 +177,46 @@
     .calendar {
         height: 30vh;
         width: 55%;
+    }
+
+    @media screen and (max-width: 450px) {
+        .main-divider{
+            display: inline;
+        }
+
+        .hide-mobile {
+            display: none;
+        }
+
+        ul > h2 {
+            font-size: 1em;
+        }
+
+        li {
+            text-align: left;
+            margin-left: 0;
+            width: 200px;
+        }
+
+        .header > li {
+            font-size: 0.8em;
+            text-align: left;
+        }
+
+        .selector {
+            margin-left: 0;
+        }
+
+        .container {
+            font-size: 5px;
+        }
+
+        .all-courses {
+            height: 40vh;
+            width: 80%;
+            margin-left: 0;
+            margin-top: 0;
+        }
     }
 
 </style>
