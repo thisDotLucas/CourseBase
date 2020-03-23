@@ -1,7 +1,7 @@
 <template>
         <vue-cal class="calendar"
                 hide-view-selector
-                 :time-from="6 * 60"
+                 :time-from="5 * 60"
                 default-view="week"
                 :disable-views="['years', 'year', 'month', 'day']"
                 :events="events"
