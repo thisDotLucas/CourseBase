@@ -5,16 +5,14 @@
 </template>
 
 <script>
-
-import AllCourses from "@/components/AllCourses"
-
+import AllCourses from "@/components/AllCourses";
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
     AllCourses
   }
-}
+};
 </script>
 
 <style>
