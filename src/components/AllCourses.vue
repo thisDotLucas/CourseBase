@@ -142,7 +142,7 @@ li > a {
   overflow-y: scroll;
   direction: rtl;
   height: 80vh;
-  flex-basis: 45%;
+  flex-basis: 40%;
 }
 
 .main-divider {
@@ -150,12 +150,12 @@ li > a {
   flex-wrap: wrap;
   width: 100%;
   justify-content: center;
-  max-width: 1600px;
+  max-width: 1800px;
   margin: 0 auto;
 }
 
 .calendar {
-  flex-basis: 45%;
+  flex-basis: 50%;
   width: 100%;
 }
 

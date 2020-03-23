@@ -87,7 +87,7 @@ a:hover {
   display: inline-block;
   margin: 4px;
   padding: 5px;
-  padding-right: 1.5rem;
+  padding-right: 5.5rem;
   flex-basis: 25%;
   text-align: right;
 }
