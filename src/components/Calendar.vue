@@ -1,5 +1,4 @@
 <template>
-    <div>
         <vue-cal class="calendar"
                 hide-view-selector
                 default-view="week"
@@ -9,9 +8,6 @@
         >
             <template v-slot:no-event>-</template>
         </vue-cal>
-    </div>
-
-
 </template>
 
 <script>

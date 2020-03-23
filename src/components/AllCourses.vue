@@ -230,5 +230,9 @@ li > a {
   .all-courses ul {
     padding: 0;
   }
+
+  .calendar {
+      height: 55vh;
+  }
 }
 </style>
