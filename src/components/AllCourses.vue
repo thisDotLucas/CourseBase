@@ -107,7 +107,7 @@ ul {
 
 p {
   text-align: center;
-  margin-top: 2.5em;
+  margin-top: 2.1em;
   font-size: 0.9em;
 }
 
@@ -156,6 +156,7 @@ li > a {
 
 .calendar {
   flex-basis: 50%;
+  height: 80vh;
   width: 100%;
 }
 
@@ -207,6 +208,10 @@ li > a {
   li {
     text-align: left;
     margin-left: 0;
+  }
+
+  p {
+    font-size: 1.7em;
   }
 
   .header > li {
