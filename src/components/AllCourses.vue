@@ -1,222 +1,234 @@
 <template>
-    <div class="container">
-        <div class="selector">
-            <ul class="header">
-                <h2 class="hide-mobile">Show courses for:</h2>
-                <li id="p1"><a v-on:click="updatePeriod(1)">Period 1</a></li>
-                <li id="p2"><a v-on:click="updatePeriod(2)">Period 2</a></li>
-                <li id="p3"><a v-on:click="updatePeriod(3)">Period 3</a></li>
-                <li id="p4"><a v-on:click="updatePeriod(4)">Period 4</a></li>
-            </ul>
-        </div>
-        <ul class="main-divider">
-            <li>
-                <div class="all-courses">
-                    <ul>
-                        <li v-for="(course, index) in currentCourses" v-bind:key="index">
-                            <Course v-bind:name="course.name" v-bind:url="course.url" v-bind:timestamps="course.timestamps"></Course>
-                        </li>
-                    </ul>
-                </div>
-            </li>
-            <li class="calendar">
-                <div style="height: 80vh">
-                    <Calendar></Calendar>
-                </div>
-            </li>
-        </ul>
-        <p>*Only currently active or available It/CS courses from Turku based universities are shown.</p>
+  <div class="container">
+    <div class="selector">
+      <ul class="header">
+        <h2 class="hide-mobile">Show courses for:</h2>
+        <li v-bind:class="{ active: selectedPeriod == 1 }" id="p1">
+          <a v-on:click="updatePeriod(1)">Period 1</a>
+        </li>
+        <li v-bind:class="{ active: selectedPeriod == 2 }" id="p2">
+          <a v-on:click="updatePeriod(2)">Period 2</a>
+        </li>
+        <li v-bind:class="{ active: selectedPeriod == 3 }" id="p3">
+          <a v-on:click="updatePeriod(3)">Period 3</a>
+        </li>
+        <li v-bind:class="{ active: selectedPeriod == 4 }" id="p4">
+          <a v-on:click="updatePeriod(4)">Period 4</a>
+        </li>
+      </ul>
     </div>
+    <div class="main-divider">
+      <div class="all-courses">
+        <ul>
+          <li v-for="(course, index) in currentCourses" v-bind:key="index">
+            <Course
+              v-bind:name="course.name"
+              v-bind:url="course.url"
+              v-bind:timestamps="course.timestamps"
+            ></Course>
+          </li>
+        </ul>
+      </div>
+      <div class="calendar">
+        <Calendar></Calendar>
+      </div>
+    </div>
+    <p>*Only currently active or available It/CS courses from Turku based universities are shown.</p>
+  </div>
 </template>
 
 <script>
+import database from "./firebaseInit";
+import Calendar from "./Calendar";
+import Course from "./Course";
 
-    import database from "./firebaseInit"
-    import Calendar from "./Calendar"
-    import Course from "./Course"
+export default {
+  name: "AllCourse",
+  components: {
+    Calendar,
+    Course
+  },
+  data() {
+    return {
+      currentCourses: [],
+      cachedCourses: [],
+      selectedPeriod: null
+    };
+  },
+  mounted: function() {
+    let current_date = new Date();
+    let month = current_date.getMonth() + 1;
 
-    export default {
-        name: "AllCourse",
-        components: {
-          Calendar, Course
-        },
-        data(){
-            return{
-                currentCourses: [],
-                cachedCourses: [],
-                selectedPeriod: null
-            }
-        },
-        mounted: function(){
-            let current_date = new Date()
-            let month = current_date.getMonth() + 1
+    if (month < 2) this.updatePeriod(3);
+    else if (month < 5) this.updatePeriod(4);
+    else if (month < 10) this.updatePeriod(1);
+    else this.updatePeriod(2);
+  },
+  methods: {
+    updatePeriod(periodNr) {
+      let that = this;
 
-            if (month < 2)
-                this.updatePeriod(3)
-            else if (month < 5)
-                this.updatePeriod(4)
-            else if (month < 10)
-                this.updatePeriod(1)
-            else
-                this.updatePeriod(2)
+      if (this.cachedCourses[periodNr - 1] == null) {
+        let ref = database.ref("period" + periodNr.toString());
+        ref.on("value", function(data) {
+          let courses = data.val();
+          let keys = [];
+          try {
+            keys = Object.keys(courses);
+          } catch (error) {
+            console.log("No data available for this period.");
+          }
 
-        },
-        methods: {
-            updatePeriod(periodNr) {
-
-                let that = this
-
-                if(this.cachedCourses[periodNr - 1] == null){
-
-                    let ref = database.ref("period" + periodNr.toString())
-                    ref.on("value", function(data) {
-                        let courses = data.val()
-                        let keys = []
-                        try {
-                            keys = Object.keys(courses)
-                        } catch(error) {
-                            console.log("No data available for this period.")
-                        }
-
-                        that.currentCourses = []
-                        for(let i = 0; i < keys.length; i++){
-                            that.currentCourses.push(courses[keys[i]])
-                        }
-                        that.cachedCourses[periodNr - 1] = that.currentCourses
-                    })
-                } else {
-                    that.currentCourses = that.cachedCourses[periodNr - 1]
-                }
-                this.updateSelectors(periodNr)
-            },
-
-            updateSelectors(selectorNr) {
-
-                let previousSelectedPeriod = this.selectedPeriod
-
-                switch(selectorNr) {
-                    case 1:
-                        this.selectedPeriod = document.getElementById("p1")
-                        break
-                    case 2:
-                        this.selectedPeriod = document.getElementById("p2")
-                        break
-                    case 3:
-                        this.selectedPeriod = document.getElementById("p3")
-                        break
-                    case 4:
-                        this.selectedPeriod = document.getElementById("p4")
-                        break
-                }
-                this.selectedPeriod.style.marginBottom = "13px"
-                if(previousSelectedPeriod != null && previousSelectedPeriod !== this.selectedPeriod)
-                    previousSelectedPeriod.style.marginBottom = "0px"
-            }
-        }
+          that.currentCourses = [];
+          for (let i = 0; i < keys.length; i++) {
+            that.currentCourses.push(courses[keys[i]]);
+          }
+          that.cachedCourses[periodNr - 1] = that.currentCourses;
+        });
+      } else {
+        that.currentCourses = that.cachedCourses[periodNr - 1];
+      }
+      this.selectedPeriod = periodNr;
     }
-
-
+  }
+};
 </script>
 
 <style scoped>
+.selector {
+  display: flex;
+  width: 100%;
+  justify-content: flex-end;
+}
 
+ul {
+  list-style-type: none;
+}
 
-    .selector {
-        margin-left: 20%;
-        margin-bottom: 1%;
-    }
+p {
+  text-align: center;
+  margin-top: 2.5em;
+  font-size: 0.9em;
+}
 
-    ul {
-        list-style-type: none;
-    }
+.header {
+  display: flex;
+  align-items: center;
+  margin-left: 0;
+  flex-basis: 85%;
+}
 
-    p {
-        text-align: center;
-        margin-top: 2.5em;
-        font-size: 0.9em;
-    }
+ul > h2 {
+  margin-right: 1em;
+}
 
-    .header {
-        display: flex;
-        align-items: center;
-        margin-left: 0;
-    }
+.header > li {
+  margin-left: 2.4em;
+  display: inline-block;
+}
 
-    ul > h2 {
-        margin-right: 1em;
-    }
+.header > li:hover {
+  cursor: pointer;
+}
 
-    .header > li {
-        margin-left: 2.4em;
-        display: inline-block;
-    }
+li > a {
+  display: inline-block;
+  padding: 5px;
+}
 
-    .header > li:hover {
-        cursor: pointer;
-    }
+.all-courses {
+  text-align: left;
+  margin-top: 1%;
+  overflow-y: scroll;
+  direction: rtl;
+  height: 80vh;
+  flex-basis: 45%;
+}
 
-    li > a {
-        display: inline-block;
-        padding: 5px;
-    }
+.main-divider {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  justify-content: center;
+  max-width: 1600px;
+  margin: 0 auto;
+}
 
-    .all-courses {
-        text-align: left;
-        margin-top: 1%;
-        margin-left: 5%;
-        overflow-y: scroll;
-        direction:rtl;
-        height:80vh;
-        width: 70vh;
-    }
+.calendar {
+  flex-basis: 45%;
+  width: 100%;
+}
 
-    .main-divider {
-        display: flex;
-    }
+.active {
+  margin-bottom: 13px;
+}
 
-    .calendar {
-        height: 30vh;
-        width: 55%;
-    }
+@media screen and (max-width: 990px) {
+  .selector {
+    justify-content: center;
+  }
 
-    @media screen and (max-width: 450px) {
-        .main-divider{
-            display: inline;
-        }
+  .header {
+    flex-basis: 100%;
+    padding: 0 1rem;
+  }
 
-        .hide-mobile {
-            display: none;
-        }
+  .header li {
+    margin-left: 1rem;
+  }
 
-        ul > h2 {
-            font-size: 1em;
-        }
+  .main-divider {
+    flex-direction: column-reverse;
+  }
+  .all-courses {
+    flex-basis: 100%;
+    direction: ltr;
+  }
 
-        li {
-            text-align: left;
-            margin-left: 0;
-            width: 200px;
-        }
+  .all-courses ul {
+    padding-left: 0;
+  }
 
-        .header > li {
-            font-size: 0.8em;
-            text-align: left;
-        }
+  .calendar {
+    flex-basis: 100%;
+    height: 70vh;
+  }
+}
 
-        .selector {
-            margin-left: 0;
-        }
+@media screen and (max-width: 450px) {
+  .hide-mobile {
+    display: none;
+  }
 
-        .container {
-            font-size: 5px;
-        }
+  ul > h2 {
+    font-size: 1em;
+  }
 
-        .all-courses {
-            height: 40vh;
-            width: 80%;
-            margin-left: 0;
-            margin-top: 0;
-        }
-    }
+  li {
+    text-align: left;
+    margin-left: 0;
+  }
 
+  .header > li {
+    font-size: 0.65rem;
+    text-align: left;
+  }
+
+  .selector {
+    margin-left: 0;
+  }
+
+  .container {
+    font-size: 5px;
+  }
+
+  .all-courses {
+    margin-left: 0;
+    margin-top: 0;
+  }
+
+  .all-courses ul {
+    padding: 0;
+  }
+}
 </style>
